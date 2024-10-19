@@ -41,6 +41,7 @@ namespace ToyBox
             // Initialize the Menu
             _menu = new Menu();
             _menu.InitializeMenu(); // Sets up the UI elements
+                // Make sure you're registering properly initialized components
             base.Initialize();
         }
 
