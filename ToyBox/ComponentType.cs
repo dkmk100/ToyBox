@@ -9,9 +9,9 @@ namespace ToyBox
 {
     public abstract class ComponentType
     {
-        public abstract JsonObject Save(ComponentData instance);
+        public abstract JsonNode Save(ComponentData instance);
 
-        public abstract ComponentData Load(JsonObject obj);
+        public abstract ComponentData Load(JsonNode obj);
 
         public abstract TriState Update(ComponentData component, TriState[] input);
 
