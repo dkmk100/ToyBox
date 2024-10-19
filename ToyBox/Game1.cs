@@ -2,6 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ToyBox.Components;
+using Myra.Graphics2D.UI; // Required for Myra UI
+using Myra;
+
 
 namespace ToyBox
 {
@@ -13,11 +16,15 @@ namespace ToyBox
         private Texture2D gatePlaceholder;
         private ComponentsRegistry registry;
 
+        private Menu _menu;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
+
         }
 
         protected override void Initialize()
@@ -28,9 +35,15 @@ namespace ToyBox
             registry.Register(new BasicGateComponent(GateType.AND), "and");
             registry.Register(new BasicGateComponent(GateType.OR), "or");
             registry.Register(new BasicGateComponent(GateType.XOR), "xor");
+            // Initialize Myra
+            MyraEnvironment.Game = this;
+
 
             UnitTests tests = new UnitTests();
             tests.RunTests(registry);
+
+            _menu = new Menu();
+            _menu.InitializeMenu(); // Sets up the UI elements
 
             base.Initialize();
         }
