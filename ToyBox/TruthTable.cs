@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Markup;
 
 namespace ToyBox
 {
@@ -21,11 +15,7 @@ namespace ToyBox
         {
             this.inputCount = inputCount;
 
-            int valueCount = 1;
-            for(int i=0;i<inputCount;i++)
-            {
-                valueCount *= 4;//for easier indexing
-            }
+            int valueCount = GetPackedCount(inputCount);
             values = new TriState[valueCount];
             locked = false;
         }
@@ -62,13 +52,17 @@ namespace ToyBox
             locked = true;
         }
 
-        int GetId(TriState[] input)
+        public static int GetPackedCount(int inputCount) 
         {
-            if (input.Length != inputCount)
+            int valueCount = 1;
+            for (int i = 0; i < inputCount; i++)
             {
-                throw new InvalidOperationException("input array does not match truth table");
+                valueCount *= 4;
             }
-
+            return valueCount;
+        }
+        public static int PackValues(TriState[] input)
+        {
             int id = 0;
             foreach (TriState state in input)
             {
@@ -76,6 +70,28 @@ namespace ToyBox
                 id += (int)state;//add tristate
             }
             return id;
+        }
+        public static TriState[] UnpackValues(int val, int count)
+        {
+            TriState[] vals = new TriState[count];
+            int i = 0;
+            while(val > 0)
+            {
+                vals[count-i-1] = ((TriState)(val & 0b11));
+                val = val >> 2;
+                i++;
+            }
+            return vals;
+        }
+
+        int GetId(TriState[] input)
+        {
+            if (input.Length != inputCount)
+            {
+                throw new InvalidOperationException("input array does not match truth table");
+            }
+
+            return PackValues(input);
         }
     }
 }

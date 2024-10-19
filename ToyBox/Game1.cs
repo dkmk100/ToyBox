@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using ToyBox.Components;
 
 
 namespace ToyBox
@@ -11,6 +12,7 @@ namespace ToyBox
         private SpriteBatch _spriteBatch;
 
         private Texture2D gatePlaceholder;
+        private ComponentsRegistry registry;
 
         public Game1()
         {
@@ -22,6 +24,11 @@ namespace ToyBox
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            registry = new ComponentsRegistry();
+            registry.Register(new BasicGateComponent(GateType.NOT), "not");
+            registry.Register(new BasicGateComponent(GateType.AND), "and");
+            registry.Register(new BasicGateComponent(GateType.OR), "or");
+            registry.Register(new BasicGateComponent(GateType.XOR), "xor");
 
             base.Initialize();
         }

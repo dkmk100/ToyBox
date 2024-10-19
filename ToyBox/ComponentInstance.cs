@@ -19,10 +19,14 @@ namespace ToyBox
             this.data = data;
         }
 
-        public JsonObject Save(ComponentsRegistry registry)
+        public JsonNode Save(ComponentsRegistry registry)
         {
-            JsonObject obj = type.Save(data);
-            obj.Add("type", registry.GetName(type));
+            JsonNode node = type.Save(data);
+            JsonObject obj = new JsonObject
+            {
+                { "data", node },
+                { "type", registry.GetName(type) }
+            };
             return obj;
         }
 
