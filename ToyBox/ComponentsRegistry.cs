@@ -19,5 +19,11 @@ namespace ToyBox
         {
             return names.GetValueOrDefault(type);
         }
+
+        public void Register(ComponentType type, string name)
+        {
+            types.Add(name, type);
+            names.Add(type, name);
+        }
     }
 }

@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace ToyBox
 {
-    public enum TriState
+    public abstract class ComponentData
     {
-        ON,
-        OFF,
-        UNPOWERED,
-        ERROR
+        
     }
 }
