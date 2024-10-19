@@ -29,6 +29,9 @@ namespace ToyBox
             registry.Register(new BasicGateComponent(GateType.OR), "or");
             registry.Register(new BasicGateComponent(GateType.XOR), "xor");
 
+            UnitTests tests = new UnitTests();
+            tests.RunTests(registry);
+
             base.Initialize();
         }
 
