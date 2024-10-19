@@ -9,6 +9,8 @@ namespace ToyBox
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        private Texture2D gatePlaceholder;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -26,7 +28,7 @@ namespace ToyBox
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            gatePlaceholder = Content.Load<Texture2D>("gate");
             // TODO: use this.Content to load your game content here
         }
 
@@ -45,6 +47,9 @@ namespace ToyBox
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(gatePlaceholder, new Vector2(0, 0), GraphicsDevice.Viewport.Bounds, Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
