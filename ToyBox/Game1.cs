@@ -4,6 +4,9 @@ using Microsoft.Xna.Framework.Input;
 using ToyBox.Components;
 using Myra.Graphics2D.UI; // Required for Myra UI
 using Myra;
+using Apos.Camera;
+using Apos.Input;
+using Track = Apos.Input.Track;
 
 
 namespace ToyBox
@@ -17,6 +20,9 @@ namespace ToyBox
         private ComponentsRegistry registry;
 
         private Menu _menu;
+
+       private Camera camera;
+        
 
         public Game1()
         {
@@ -45,6 +51,22 @@ namespace ToyBox
             _menu = new Menu();
             _menu.InitializeMenu(); // Sets up the UI elements
 
+            IVirtualViewport defaultViewport = new DefaultViewport(GraphicsDevice, Window);
+
+            camera = new Camera(defaultViewport);
+
+            camera.SetViewport();
+            _spriteBatch.Begin(transformMatrix: camera.View);
+
+            // Your draw code.
+
+            _spriteBatch.End();
+            camera.ResetViewport();
+
+            camera.XY = new Vector2(100, 50);
+            camera.Scale = new Vector2(2f, 2f);
+            camera.Rotation = MathHelper.PiOver4;
+
                 // Make sure you're registering properly initialized components
             base.Initialize();
         }
@@ -70,12 +92,38 @@ namespace ToyBox
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
-            _spriteBatch.Begin();
-            _spriteBatch.Draw(gatePlaceholder, new Vector2(0, 0), GraphicsDevice.Viewport.Bounds, Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
-            _spriteBatch.End();
-            _menu.Draw();
-            base.Draw(gameTime);
+
+            camera.SetViewport();
+            DrawBackground(camera);
+            DrawForeground(camera);
+            camera.SetViewport();
+
+            camera.Z = 10f;
+
         }
+
+        
+        private void DrawBackground(Camera c) {
+            // This gives you a matrix that is pushed under the ground plane.
+            _spriteBatch.Begin(transformMatrix: c.GetView(-1));
+
+            // Draw the background.
+
+            _spriteBatch.End();
+        }
+
+        private void DrawForeground(Camera c) {
+            _spriteBatch.Begin(transformMatrix: c.View);
+
+            // Draw the foreground.
+
+            _spriteBatch.End();
+        }
+
+        public void DrawCamera(Camera c) {
+            c.SetViewport();
+            c.ResetViewport();
+        }
+
     }
 }
