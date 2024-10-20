@@ -73,7 +73,7 @@ public class Menu
             HorizontalAlignment = HorizontalAlignment.Left,
             VerticalAlignment = VerticalAlignment.Bottom,
             Scale = new Vector2(1.5f),
-            Left = 100
+            Left = 200
         };
 
         root.Widgets.Add(selectedGateLabel);
@@ -114,7 +114,7 @@ public class Menu
             AddGateButton(buttonPanel, name, name, y);
             y += _verticalSpacing;
         }
-        selectedGateType = buttonNames[0];
+        selectedGateType = "none";
     }
 
     private Button AddGateButton(Panel panel, string name, int height)
