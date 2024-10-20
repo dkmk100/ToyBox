@@ -82,7 +82,7 @@ namespace ToyBox
             bool changed = components[index].Item1.TrySet(value);
             if (changed)
             {
-                UpdateComponent(index);
+                UpdateComponent(index, new List<int>());
             }
             return changed;
         }
@@ -106,7 +106,7 @@ namespace ToyBox
         {
             ComponentInstance component = new ComponentInstance(type, pos);
             components.Add((component, new List<(int, int)>(), new List<int>()));
-            UpdateComponent(components.Count - 1);//initialize component
+            UpdateComponent(components.Count - 1, new List<int>());//initialize component
             return components.Count - 1;
         }
 
@@ -117,7 +117,7 @@ namespace ToyBox
             {
                 components[item2].Item2.Add((item1, outputId));
                 components[item1].Item3.Add(item2);
-                UpdateComponent(item2);//update component that has connection
+                UpdateComponent(item2, new List<int>());//update component that has connection
             }
             else
             {
@@ -128,11 +128,12 @@ namespace ToyBox
         public void ToggleComponent(int id)
         {
             components[id].Item1.OnInteract();
-            UpdateComponent(id);
+            UpdateComponent(id, new List<int>());
         }
 
-        public void UpdateComponent(int id)
+        public void UpdateComponent(int id, List<int> visited, bool secondTime = false)
         {
+            
             TriState[] states = new TriState[components[id].Item2.Count];
             int i = 0;
             foreach((int input, int output) in components[id].Item2)
@@ -141,11 +142,28 @@ namespace ToyBox
                 i++;
             }
 
+
+            if (visited.Contains(id))
+            {
+                Debug.WriteLine("loop detected!");
+                if (secondTime)
+                {
+                    return;
+                }
+                else
+                {
+                    secondTime = true;
+                }
+            }
+
+            visited.Add(id);
+
             TriState[] result = components[id].Item1.Update(states);
             foreach(int next in components[id].Item3)
             {
-                UpdateComponent(next);
+                UpdateComponent(next, visited, secondTime);
             }
+
         }
 
         public void Render(SpriteBatch batch, SpritesManager sprites, ComponentsRegistry registry)
