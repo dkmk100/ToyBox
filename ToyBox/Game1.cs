@@ -129,7 +129,7 @@ namespace ToyBox
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             camera.SetViewport();
-            DrawBackground(camera);
+            DrawBackground();
 
             _spriteBatch.Begin(transformMatrix: camera.View);
 
@@ -137,7 +137,7 @@ namespace ToyBox
 
             _spriteBatch.End();
 
-            DrawForeground(camera);
+            DrawForeground();
             camera.ResetViewport();
 
             _menu.Draw();
@@ -146,26 +146,26 @@ namespace ToyBox
         }
 
         
-        private void DrawBackground(Camera c) {
+        private void DrawBackground() {
             // This gives you a matrix that is pushed under the ground plane.
-            _spriteBatch.Begin(transformMatrix: c.GetView(-1));
+            _spriteBatch.Begin(transformMatrix: camera.GetView(-1));
 
             // Draw the background.
 
             _spriteBatch.End();
         }
 
-        private void DrawForeground(Camera c) {
-            _spriteBatch.Begin(transformMatrix: c.View);
+        private void DrawForeground() {
+            _spriteBatch.Begin(transformMatrix: camera.View);
 
             // Draw the foreground.
 
             _spriteBatch.End();
         }
 
-        public void DrawCamera(Camera c) {
-            c.SetViewport();
-            c.ResetViewport();
+        public void DrawCamera() {
+            camera.SetViewport();
+            camera.ResetViewport();
         }
 
     }
