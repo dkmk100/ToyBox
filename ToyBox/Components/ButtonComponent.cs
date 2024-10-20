@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -51,6 +53,22 @@ namespace ToyBox.Components
         {
             ((BasicComponentData)component).cachedValue = state;
             return true;
+        }
+
+        public override void Render(SpriteBatch batch, ComponentData component, Vector2 pos, SpritesManager sprites, ComponentsRegistry registry)
+        {
+            BasicComponentData data = component as BasicComponentData;
+            string name; 
+            if (data.cachedValue.IsOn())
+            {
+                name = "button_pressed";
+            }
+            else
+            {
+                name = "button_notpressed";
+            }
+
+            sprites.Render(batch, name, pos, 1.5f);
         }
     }
 }

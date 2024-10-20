@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System.Diagnostics;
 using System.Text.Json.Nodes;
-using System.Threading.Tasks;
 
 namespace ToyBox.Components
 {
@@ -80,6 +77,7 @@ namespace ToyBox.Components
                     }
                     return val.Invert();
                 case GateType.AND:
+                case GateType.NAND:
                     val = TriState.UNPOWERED;
                     foreach(TriState state in input)
                     {
@@ -96,8 +94,9 @@ namespace ToyBox.Components
                             val = TriState.ON;
                         }
                     }
-                    return val;
+                    return type==GateType.NAND ? val.Invert() : val;
                 case GateType.OR:
+                case GateType.NOR:
                     val = TriState.UNPOWERED;
                     foreach (TriState state in input)
                     {
@@ -114,8 +113,9 @@ namespace ToyBox.Components
                             val = TriState.OFF;
                         }
                     }
-                    return val;
+                    return type == GateType.NOR ? val.Invert() : val;
                 case GateType.XOR:
+                case GateType.XNOR:
                     bool hasInput = true;
                     int count = 0;
                     foreach (TriState state in input)
@@ -141,7 +141,8 @@ namespace ToyBox.Components
                     {
                         return TriState.UNPOWERED;
                     }
-                    return count % 2 == 0 ? TriState.OFF : TriState.ON;
+                    val = count % 2 == 0 ? TriState.OFF : TriState.ON;
+                    return type == GateType.NAND ? val.Invert() : val;
                 default:
                     return TriState.ERROR;
             }
@@ -164,6 +165,11 @@ namespace ToyBox.Components
         public override bool TrySetState(ComponentData component, TriState state)
         {
             return false;
+        }
+
+        public override void Render(SpriteBatch batch, ComponentData component, Vector2 pos, SpritesManager sprites, ComponentsRegistry registry)
+        {
+            sprites.Render(batch, registry.GetName(this), pos, 1.5f);
         }
     }
 }

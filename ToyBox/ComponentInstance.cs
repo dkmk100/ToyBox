@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
@@ -89,6 +90,11 @@ namespace ToyBox
         public bool TrySet(TriState state)
         {
             return type.TrySetState(data, state);
+        }
+
+        public void Render(SpriteBatch batch, SpritesManager sprites, ComponentsRegistry registry)
+        {
+            type.Render(batch, data, pos, sprites, registry);
         }
     }
 }

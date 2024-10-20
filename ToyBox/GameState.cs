@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -89,8 +90,10 @@ namespace ToyBox
         {
             for(int i = 0; i < components.Count; i++)
             {
+                
                 ComponentInstance component = components[i].Item1;
-                if ((component.GetPos()+pos).LengthSquared() < range*range)
+                float len2 = Vector2.Subtract(component.GetPos(), pos).LengthSquared();
+                if (len2 < range*range)
                 {
                     return i;
                 }
@@ -137,9 +140,12 @@ namespace ToyBox
             }
         }
 
-
-        //TODO: method to create a new component at a position
-        //TODO: method to add connection between component
-        //TODO: method to interact with component (ex. buttons)
+        public void Render(SpriteBatch batch, SpritesManager sprites, ComponentsRegistry registry)
+        {
+            foreach(var item in components)
+            {
+                item.Item1.Render(batch, sprites, registry);
+            }
+        }
     }
 }

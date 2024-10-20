@@ -7,6 +7,7 @@ using Myra;
 using Apos.Camera;
 using Apos.Input;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 
 namespace ToyBox
@@ -16,16 +17,18 @@ namespace ToyBox
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private Texture2D gatePlaceholder;
         private ComponentsRegistry registry;
 
         private Menu _menu;
 
        private Camera camera;
 
+        SpritesManager manager;
         private GameState gameState;
 
         int selectedOut = 0;
+
+        int selectedComponent = -1;
 
         public Game1()
         {
@@ -43,6 +46,9 @@ namespace ToyBox
             registry.RegisterBuiltin(new BasicGateComponent(GateType.AND), "and");
             registry.RegisterBuiltin(new BasicGateComponent(GateType.OR), "or");
             registry.RegisterBuiltin(new BasicGateComponent(GateType.XOR), "xor");
+            registry.RegisterBuiltin(new BasicGateComponent(GateType.NAND), "nand");
+            registry.RegisterBuiltin(new BasicGateComponent(GateType.NOR), "nor");
+            registry.RegisterBuiltin(new BasicGateComponent(GateType.XNOR), "xnor");
             registry.RegisterBuiltin(new ButtonComponent(), "button");
 
             //run unit tests
@@ -76,19 +82,18 @@ namespace ToyBox
             camera.SetViewport();
             
 
-            camera.XY = new Vector2(100, 50);
-            camera.Scale = new Vector2(2f, 2f);
-            camera.Rotation = MathHelper.PiOver4;
+            camera.XY = new Vector2(0, 0);
+            camera.Scale = new Vector2(1f, 1f);
+            camera.Rotation = 0;//MathHelper.PiOver4
 
-                // Make sure you're registering properly initialized components
+            // Make sure you're registering properly initialized components
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            gatePlaceholder = Content.Load<Texture2D>("gate");
-            // TODO: use this.Content to load your game content here
+            manager = new SpritesManager(Content);
         }
 
         bool lastPressed = false;
@@ -117,6 +122,42 @@ namespace ToyBox
                 pressed = false;
             }
 
+            if(pressed && !lastPressed && !_menu.IsOnUI())
+            {
+                float range = 20f;
+                string selected = _menu.GetSelected();
+                Vector2 pos = camera.ScreenToWorld(Mouse.GetState().Position.ToVector2());
+                if (selected == "none")
+                {
+                    int component = gameState.GetComponent(pos,range);
+                    if(component >= 0)
+                    {
+                        gameState.ToggleComponent(component);
+                    }
+                }
+                else if(selected == "wire")
+                {
+                    int component = gameState.GetComponent(pos, range);
+                    if (component >= 0)
+                    {
+                        if(selectedComponent == -1)
+                        {
+                            selectedComponent = component;
+                        }
+                        else
+                        {
+                            gameState.AddConnection(selectedComponent, selectedOut, component);
+                            selectedComponent = -1;
+                        }
+                    }
+                }
+                else
+                {
+                    gameState.AddComponent(registry.Get(selected), pos);
+                    _menu.SetSelectedGateType("none");
+                }
+            }
+
             lastPressed = pressed;
 
             // TODO: Add your update logic here
@@ -133,7 +174,7 @@ namespace ToyBox
 
             _spriteBatch.Begin(transformMatrix: camera.View);
 
-            // Your draw code.
+            gameState.Render(_spriteBatch, manager, registry);
 
             _spriteBatch.End();
 
@@ -141,8 +182,6 @@ namespace ToyBox
             camera.ResetViewport();
 
             _menu.Draw();
-
-            camera.Z = 10f;
         }
 
         
@@ -161,11 +200,6 @@ namespace ToyBox
             // Draw the foreground.
 
             _spriteBatch.End();
-        }
-
-        public void DrawCamera() {
-            camera.SetViewport();
-            camera.ResetViewport();
         }
 
     }

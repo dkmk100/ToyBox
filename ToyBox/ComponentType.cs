@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,5 +23,7 @@ namespace ToyBox
 
         public abstract void OnInteract(ComponentData component);
         public abstract bool TryGetTruthTable(ComponentData component, int inputCount, out TruthTable? table);
+
+        public abstract void Render(SpriteBatch batch, ComponentData component, Vector2 pos, SpritesManager sprites, ComponentsRegistry registry);
     }
 }

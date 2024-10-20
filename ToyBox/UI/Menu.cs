@@ -76,7 +76,7 @@ public class Menu
         {
             buttonPanel.Widgets.Remove(button);
         }
-        _currentY = 20;
+        _currentY = 30;
 
         foreach(var name in buttonNames)
         {
@@ -86,7 +86,7 @@ public class Menu
     }
 
     // Helper method to add a gate selection button with a label
-    private int _currentY = 20; // Initial Y position
+    private int _currentY = 0; // Initial Y position
     private int _verticalSpacing = 60; // Space between buttons (button height + some padding)
 
     private Button AddGateButton(Panel panel, string buttonText, string gateType)
