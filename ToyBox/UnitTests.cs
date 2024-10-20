@@ -116,8 +116,8 @@ namespace ToyBox
             state.AddConnection(h1, 1, or);
             state.AddConnection(h2, 1, or);
 
-            //Debug.WriteLine("Full Adder Game State: ");
-            //Debug.WriteLine(state.ToJson(registry));
+            Debug.WriteLine("Full Adder Game State: ");
+            Debug.WriteLine(state.ToJson(registry));
 
             Debug.WriteLine("adder i1: " + state.GetValue(i1));
             Debug.WriteLine("adder i2: " + state.GetValue(i2));

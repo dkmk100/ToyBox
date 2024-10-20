@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
@@ -28,7 +30,7 @@ namespace ToyBox.Components
 
         public override ComponentData Load(JsonNode obj)
         {
-            throw new NotImplementedException();
+            return CompoundComponentData.FromJson(registry, obj);
         }
 
         public override void OnInteract(ComponentData component)
@@ -38,7 +40,9 @@ namespace ToyBox.Components
 
         public override JsonNode Save(ComponentData instance)
         {
-            throw new NotImplementedException();
+            CompoundComponentData data = instance as CompoundComponentData;
+
+            return data.ToJson(registry);
         }
 
         public override bool TryGetTruthTable(ComponentData component, int inputCount, out TruthTable? table)
