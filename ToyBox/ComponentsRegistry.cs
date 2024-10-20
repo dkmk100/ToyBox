@@ -11,6 +11,11 @@ namespace ToyBox
         Dictionary<string, ComponentType> types = new Dictionary<string, ComponentType>();
         Dictionary<ComponentType, string> names = new Dictionary<ComponentType, string>();
 
+        public IEnumerable<string> GetNames()
+        {
+            return names.Values;
+        }
+
         public ComponentType Get(string name)
         {
             return types.GetValueOrDefault(name);

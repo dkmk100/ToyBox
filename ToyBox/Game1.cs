@@ -6,7 +6,7 @@ using Myra.Graphics2D.UI; // Required for Myra UI
 using Myra;
 using Apos.Camera;
 using Apos.Input;
-using Track = Apos.Input.Track;
+using System.Collections.Generic;
 
 
 namespace ToyBox
@@ -22,11 +22,15 @@ namespace ToyBox
         private Menu _menu;
 
        private Camera camera;
-        
+
+        private GameState gameState;
+
+        int selectedOut = 0;
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
+            this.Window.AllowUserResizing = true;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -45,23 +49,32 @@ namespace ToyBox
             UnitTests tests = new UnitTests();
             tests.RunTests(registry);
 
+            gameState = new GameState();
+
+            
+
             // Initialize Myra
             MyraEnvironment.Game = this;
 
             _menu = new Menu();
             _menu.InitializeMenu(); // Sets up the UI elements
 
+            List<string> buttons = new List<string>();
+            buttons.Add("none");
+            buttons.Add("wire");
+            foreach (var name in registry.GetNames())
+            {
+                buttons.Add(name);
+            }
+
+            _menu.RefreshButtons(buttons.ToArray());
+
             IVirtualViewport defaultViewport = new DefaultViewport(GraphicsDevice, Window);
 
             camera = new Camera(defaultViewport);
 
             camera.SetViewport();
-            _spriteBatch.Begin(transformMatrix: camera.View);
-
-            // Your draw code.
-
-            _spriteBatch.End();
-            camera.ResetViewport();
+            
 
             camera.XY = new Vector2(100, 50);
             camera.Scale = new Vector2(2f, 2f);
@@ -78,10 +91,33 @@ namespace ToyBox
             // TODO: use this.Content to load your game content here
         }
 
+        bool lastPressed = false;
+
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            if (Keyboard.GetState().IsKeyDown(Keys.D1))
+            {
+                selectedOut = 0;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.D2))
+            {
+                selectedOut = 1;
+            }
+
+            bool pressed = false;
+            if(Mouse.GetState().LeftButton == ButtonState.Pressed)
+            {
+                pressed = true;
+            }
+            else
+            {
+                pressed = false;
+            }
+
+            lastPressed = pressed;
 
             // TODO: Add your update logic here
 
@@ -92,14 +128,21 @@ namespace ToyBox
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-
             camera.SetViewport();
             DrawBackground(camera);
+
+            _spriteBatch.Begin(transformMatrix: camera.View);
+
+            // Your draw code.
+
+            _spriteBatch.End();
+
             DrawForeground(camera);
-            camera.SetViewport();
+            camera.ResetViewport();
+
+            _menu.Draw();
 
             camera.Z = 10f;
-
         }
 
         
