@@ -74,7 +74,7 @@ namespace ToyBox
             _spriteBatch.Begin();
             _spriteBatch.Draw(gatePlaceholder, new Vector2(0, 0), GraphicsDevice.Viewport.Bounds, Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
             _spriteBatch.End();
-
+            _menu.Draw();
             base.Draw(gameTime);
         }
     }
