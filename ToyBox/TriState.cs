@@ -9,10 +9,10 @@ namespace ToyBox
 {
     public enum TriState
     {
-        ON,
-        OFF,
-        UNPOWERED,
-        ERROR
+        ERROR = 0b00,
+        UNPOWERED = 0b01,
+        OFF = 0b10,
+        ON = 0b11
     }
 
     static class TriStateExtensions

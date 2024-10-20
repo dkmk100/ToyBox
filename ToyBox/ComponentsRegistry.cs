@@ -20,10 +20,28 @@ namespace ToyBox
             return names.GetValueOrDefault(type);
         }
 
+        public void RegisterBuiltin(ComponentType type, string name)
+        {
+            types.Add(name, type);
+            names.Add(type, name);
+        }
+
         public void Register(ComponentType type, string name)
         {
             types.Add(name, type);
             names.Add(type, name);
+        }
+
+        public ComponentsRegistry Clone()
+        {
+            ComponentsRegistry registry = new ComponentsRegistry();
+            foreach (var val in types)
+            {
+                registry.types.Add(val.Key, val.Value);
+                registry.names.Add(val.Value, val.Key);
+
+            }
+            return registry;
         }
     }
 }

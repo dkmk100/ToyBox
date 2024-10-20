@@ -34,7 +34,7 @@ namespace ToyBox
             {
                 JsonObject obj = item.AsObject();
                 ComponentInstance component = ComponentInstance.Load(registry, obj["component"]);
-                List<int> inputs = new List<int>(obj["inputs"].AsArray().GetValues<int>());
+                List<(int,int)> inputs = new List<(int,int)>(obj["inputs"].AsArray().GetValues<(int,int)>());
                 List<int> outputs = new List<int>(obj["outputs"].AsArray().GetValues<int>());
                 state.components.Add((component, inputs, outputs));
             }
@@ -50,8 +50,12 @@ namespace ToyBox
             }
             return state;
         }
+        public void Clear()
+        {
+            this.components.Clear();
+        }
         
-        List<(ComponentInstance, List<int>, List<int>)> components = new List<(ComponentInstance, List<int>, List<int>)>();
+        List<(ComponentInstance, List<(int,int)>, List<int>)> components = new List<(ComponentInstance, List<(int,int)>, List<int>)>();
 
         public List<ComponentInstance> GetComponents()
         {
@@ -65,7 +69,20 @@ namespace ToyBox
 
         public TriState GetValue(int index)
         {
-            return components[index].Item1.GetCached();
+            return GetValue(index, 0);
+        }
+        public TriState GetValue(int index, int output)
+        {
+            return components[index].Item1.GetCached(output);
+        }
+        public bool TrySetValue(int index, TriState value)
+        {
+            bool changed = components[index].Item1.TrySet(value);
+            if (changed)
+            {
+                UpdateComponent(index);
+            }
+            return changed;
         }
 
         public int GetComponent(Vector2 pos, float range)
@@ -84,15 +101,15 @@ namespace ToyBox
         public int AddComponent(ComponentType type, Vector2 pos)
         {
             ComponentInstance component = new ComponentInstance(type, pos);
-            components.Add((component, new List<int>(), new List<int>()));
+            components.Add((component, new List<(int, int)>(), new List<int>()));
             UpdateComponent(components.Count - 1);//initialize component
             return components.Count - 1;
         }
 
-        public void AddConnection(int item1, int item2)
+        public void AddConnection(int item1, int outputId, int item2)
         {
             //list of inputs is before list of outputs
-            components[item2].Item2.Add(item1);
+            components[item2].Item2.Add((item1, outputId));
             components[item1].Item3.Add(item2);
             UpdateComponent(item2);//update component that has connection
         }
@@ -107,14 +124,13 @@ namespace ToyBox
         {
             TriState[] states = new TriState[components[id].Item2.Count];
             int i = 0;
-            foreach(int input in components[id].Item2)
+            foreach((int input, int output) in components[id].Item2)
             {
-                states[i] = components[input].Item1.GetCached();
+                states[i] = components[input].Item1.GetCached(output);
                 i++;
             }
 
-            TriState state = components[id].Item1.Update(states);
-            Debug.WriteLine("updated: " + id + ", new state: " + state);
+            TriState[] result = components[id].Item1.Update(states);
             foreach(int next in components[id].Item3)
             {
                 UpdateComponent(next);

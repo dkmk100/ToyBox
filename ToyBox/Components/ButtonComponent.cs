@@ -38,9 +38,19 @@ namespace ToyBox.Components
             return false;
         }
 
-        public override TriState Update(ComponentData component, TriState[] input)
+        public override int GetOutputCount()
         {
-            return ((BasicComponentData)component).cachedValue;
+            return 1;
+        }
+        public override TriState[] Update(ComponentData component, TriState[] input)
+        {
+            return new TriState[]{ ((BasicComponentData)component).cachedValue };
+        }
+
+        public override bool TrySetState(ComponentData component, TriState state)
+        {
+            ((BasicComponentData)component).cachedValue = state;
+            return true;
         }
     }
 }

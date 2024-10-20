@@ -29,11 +29,11 @@ namespace ToyBox
         {
             //register the component types
             registry = new ComponentsRegistry();
-            registry.Register(new BasicGateComponent(GateType.NOT), "not");
-            registry.Register(new BasicGateComponent(GateType.AND), "and");
-            registry.Register(new BasicGateComponent(GateType.OR), "or");
-            registry.Register(new BasicGateComponent(GateType.XOR), "xor");
-            registry.Register(new ButtonComponent(), "button");
+            registry.RegisterBuiltin(new BasicGateComponent(GateType.NOT), "not");
+            registry.RegisterBuiltin(new BasicGateComponent(GateType.AND), "and");
+            registry.RegisterBuiltin(new BasicGateComponent(GateType.OR), "or");
+            registry.RegisterBuiltin(new BasicGateComponent(GateType.XOR), "xor");
+            registry.RegisterBuiltin(new ButtonComponent(), "button");
 
             //run unit tests
             UnitTests tests = new UnitTests();

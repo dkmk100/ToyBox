@@ -147,14 +147,23 @@ namespace ToyBox.Components
             }
         }
 
-        public override TriState Update(ComponentData component, TriState[] input)
+        public override int GetOutputCount()
         {
-            return GetValue(input, this.type);
+            return 1;
+        }
+        public override TriState[] Update(ComponentData component, TriState[] input)
+        {
+            return new TriState[]{GetValue(input, this.type)};
         }
 
         public override void OnInteract(ComponentData component)
         {
             //nothing to do here
+        }
+
+        public override bool TrySetState(ComponentData component, TriState state)
+        {
+            return false;
         }
     }
 }

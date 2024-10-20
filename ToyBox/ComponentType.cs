@@ -14,7 +14,11 @@ namespace ToyBox
         public abstract ComponentData Load(JsonNode obj);
         public abstract ComponentData CreateData();
 
-        public abstract TriState Update(ComponentData component, TriState[] input);
+        public abstract int GetOutputCount();
+        public abstract TriState[] Update(ComponentData component, TriState[] input);
+
+        public abstract bool TrySetState(ComponentData component, TriState state);
+
         public abstract void OnInteract(ComponentData component);
         public abstract bool TryGetTruthTable(ComponentData component, int inputCount, out TruthTable? table);
     }

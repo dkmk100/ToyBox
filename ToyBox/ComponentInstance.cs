@@ -9,7 +9,7 @@ namespace ToyBox
         private ComponentType type;
         private ComponentData data;
         private Vector2 pos;
-        private TriState previous;
+        private TriState[] previous;
         private TriState[] previousIn;
 
         public Vector2 GetPos()
@@ -31,7 +31,7 @@ namespace ToyBox
             this.type = type;
             this.data = type.CreateData();
             this.pos = pos;
-            previous = TriState.ERROR;
+            previous = new TriState[type.GetOutputCount()];
         }
 
         public ComponentInstance(ComponentType type, ComponentData data, Vector2 pos)
@@ -39,7 +39,7 @@ namespace ToyBox
             this.type = type;
             this.data = data;
             this.pos = pos;
-            previous = TriState.ERROR;
+            previous = new TriState[type.GetOutputCount()];
         }
 
         public JsonNode Save(ComponentsRegistry registry)
@@ -65,21 +65,30 @@ namespace ToyBox
             return new ComponentInstance(type, type.Load(data), pos);
         }
 
-        public TriState Update(TriState[] inputs)
+        public int GetOutputCount()
+        {
+            return type.GetOutputCount();
+        }
+        public TriState[] Update(TriState[] inputs)
         {
             previousIn = inputs;
 
-            TriState state = type.Update(data, inputs);
-            previous = state;
-            return state;
+            TriState[] states = type.Update(data, inputs);
+            previous = states;
+            return states;
         }
-        public TriState GetCached()
+        public TriState GetCached(int id)
         {
-            return previous;
+            return previous[id];
         }
         public void OnInteract()
         {
             type.OnInteract(data);
+        }
+
+        public bool TrySet(TriState state)
+        {
+            return type.TrySetState(data, state);
         }
     }
 }
