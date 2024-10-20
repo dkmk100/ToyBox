@@ -113,9 +113,16 @@ namespace ToyBox
         public void AddConnection(int item1, int outputId, int item2)
         {
             //list of inputs is before list of outputs
-            components[item2].Item2.Add((item1, outputId));
-            components[item1].Item3.Add(item2);
-            UpdateComponent(item2);//update component that has connection
+            if (outputId < components[item1].Item1.GetOutputCount())
+            {
+                components[item2].Item2.Add((item1, outputId));
+                components[item1].Item3.Add(item2);
+                UpdateComponent(item2);//update component that has connection
+            }
+            else
+            {
+                Debug.WriteLine("ERROR: invalid output id: " + outputId);
+            }
         }
 
         public void ToggleComponent(int id)

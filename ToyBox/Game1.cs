@@ -47,11 +47,9 @@ namespace ToyBox
             registry.RegisterBuiltin(new BasicGateComponent(GateType.AND), "and");
             registry.RegisterBuiltin(new BasicGateComponent(GateType.OR), "or");
             registry.RegisterBuiltin(new BasicGateComponent(GateType.XOR), "xor");
-            /*
             registry.RegisterBuiltin(new BasicGateComponent(GateType.NAND), "nand");
             registry.RegisterBuiltin(new BasicGateComponent(GateType.NOR), "nor");
             registry.RegisterBuiltin(new BasicGateComponent(GateType.XNOR), "xnor");
-            */
             registry.RegisterBuiltin(new LEDComponent(1), "Yellow LED");
             registry.RegisterBuiltin(new LEDComponent(2), "Green LED");
             registry.RegisterBuiltin(new LEDComponent(3), "Blue LED");
@@ -92,10 +90,6 @@ namespace ToyBox
         void ResetButtons()
         {
             List<string> buttons = new List<string>();
-            buttons.Add("none");
-            buttons.Add("clear");
-            buttons.Add("new");
-            buttons.Add("wire");
             foreach (var name in registry.GetNames())
             {
                 buttons.Add(name);
@@ -172,7 +166,12 @@ namespace ToyBox
                 {
                     List<ComponentInstance> components = gameState.GetComponents();
                     ComponentType button = registry.Get("button");
-                    ComponentType[] lights = [registry.Get("LED")];
+                    ComponentType[] lights = [
+                        registry.Get("Yellow LED"),
+                        registry.Get("Green LED"),
+                        registry.Get("Blue LED"),
+                        registry.Get("Red LED"),
+                        ];
 
                     List<int> inputs = new List<int>();
                     List<(int, int)> outputs = new List<(int, int)>();

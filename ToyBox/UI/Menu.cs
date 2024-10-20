@@ -3,6 +3,8 @@ using Myra.Graphics2D.UI;
 using System.Collections.Generic;
 using Myra.Graphics2D.UI.Styles;
 using Myra.Graphics2D.TextureAtlases;
+using MonoGame.Extended;
+using Myra.Graphics2D;
 
 public class Menu
 {
@@ -18,6 +20,7 @@ public class Menu
     private List<Button> buttons = new List<Button>();
 
     private Panel buttonPanel;
+    ScrollViewer buttonScroll;
 
     public string GetSelected()
     {
@@ -35,22 +38,31 @@ public class Menu
         // Create the desktop (root for Myra UI elements)
         _desktop = new Desktop();
 
+        var root = new Panel();
+
         // Create a panel to hold the menu items
         var panel = new Panel
         {
-            Width = 200,
-            Height = 900
+            Width = 100,
+            Height = 1200
         };
 
         // Add a label for the title
         var titleLabel = new Label
         {
-            Text = "Component Selection Menu",
+            Text = "Logic Gate Simulator",
+            Scale = new Vector2(2f),
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Top,
-            MinHeight = 20
+            Top = 20
         };
-        panel.Widgets.Add(titleLabel);
+
+        AddGateButton(root, "none", 20);
+        AddGateButton(root, "new", 20+60*1);
+        AddGateButton(root, "clear", 20 + 60 * 2);
+        AddGateButton(root, "wire", 20 + 60 * 3);
+
+        root.Widgets.Add(titleLabel);
 
         buttonPanel = panel;
 
@@ -60,15 +72,32 @@ public class Menu
             Text = "Selected Gate: None",
             HorizontalAlignment = HorizontalAlignment.Left,
             VerticalAlignment = VerticalAlignment.Bottom,
+            Scale = new Vector2(1.5f),
+            Left = 100
         };
 
-        panel.Widgets.Add(selectedGateLabel);
+        root.Widgets.Add(selectedGateLabel);
+
+        var scroll = new ScrollViewer
+        {
+            Width = 150,
+            Top = buttonsStart
+        };
+
+        scroll.Content = panel;
+        buttonScroll = scroll;
+
+        root.Widgets.Add(scroll);
 
         // Set the panel as the root widget of the desktop
-        _desktop.Root = panel;
+        _desktop.Root = root;
 
         
     }
+
+    private int buttonsStart = 20 + 60*4;
+
+    private int _verticalSpacing = 60; // Space between buttons (button height + some padding)
 
     public void RefreshButtons(string[] buttonNames)
     {
@@ -76,20 +105,24 @@ public class Menu
         {
             buttonPanel.Widgets.Remove(button);
         }
-        _currentY = 30;
+        int y = 0;
+
+        buttonPanel.Height = _verticalSpacing * (buttonNames.Length + 1);
 
         foreach(var name in buttonNames)
         {
-            AddGateButton(buttonPanel, name, name);
+            AddGateButton(buttonPanel, name, name, y);
+            y += _verticalSpacing;
         }
         selectedGateType = buttonNames[0];
     }
 
-    // Helper method to add a gate selection button with a label
-    private int _currentY = 0; // Initial Y position
-    private int _verticalSpacing = 60; // Space between buttons (button height + some padding)
+    private Button AddGateButton(Panel panel, string name, int height)
+    {
+        return AddGateButton(panel, name, name, height);
+    }
 
-    private Button AddGateButton(Panel panel, string buttonText, string gateType)
+    private Button AddGateButton(Panel panel, string buttonText, string gateType, int height)
     {
         var button = new Button
         {
@@ -97,7 +130,7 @@ public class Menu
             Height = 50,
             HorizontalAlignment = HorizontalAlignment.Left,
             VerticalAlignment = VerticalAlignment.Top,
-            Top = _currentY // Set the Y position for this button
+            Top = height // Set the Y position for this button
         };
 
         // Create a label and set it as the button's content
@@ -120,9 +153,6 @@ public class Menu
         // Add the button to the panel
         panel.Widgets.Add(button);
 
-        // Move the Y position down for the next button
-        _currentY += _verticalSpacing;
-
         return button;
     }
 
@@ -137,6 +167,7 @@ public class Menu
     public void Draw(int selected)
     {
         selectedGateLabel.Text = $"Selected Gate: {selectedGateType}, {selected}";
+        buttonScroll.Height = _desktop.BoundsFetcher().Height - buttonsStart;
         // Render the Myra UI
         _desktop.Render();
     }

@@ -93,7 +93,7 @@ namespace ToyBox.Components
                 name = "light_off";
             }
 
-            sprites.Render(batch, name, pos, 1.5f);
+            sprites.Render(batch, name, pos, 2f);
         }
     }
 }
