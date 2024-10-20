@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -12,6 +13,13 @@ namespace ToyBox.Components
 {
     public class LEDComponent : ComponentType
     {
+
+        public int color;
+
+        public LEDComponent(int colorValue) {
+            color = colorValue;
+        }
+
         public override ComponentData CreateData()
         {
             BasicComponentData data = new BasicComponentData();
@@ -70,7 +78,15 @@ namespace ToyBox.Components
             string name; 
             if (data.cachedValue.IsOn())
             {
-                name = "light_yellow_on";
+                if (color == 1) { 
+                    name = "light_yellow_on";
+                } else if (color == 2) {
+                    name = "light_green_on";
+                } else if (color == 3) {
+                    name = "light_blue_on";
+                } else {
+                    name = "light_red_on";
+                }
             }
             else
             {
