@@ -8,8 +8,8 @@ namespace ToyBox
 {
     public class ComponentsRegistry
     {
-        Dictionary<string, ComponentType> types;
-        Dictionary<ComponentType, string> names;
+        Dictionary<string, ComponentType> types = new Dictionary<string, ComponentType>();
+        Dictionary<ComponentType, string> names = new Dictionary<ComponentType, string>();
 
         public ComponentType Get(string name)
         {

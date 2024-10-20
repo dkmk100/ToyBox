@@ -13,6 +13,12 @@ namespace ToyBox
         private ComponentType type;
         private ComponentData data;
 
+        public ComponentInstance(ComponentType type)
+        {
+            this.type = type;
+            this.data = type.CreateData();
+        }
+
         public ComponentInstance(ComponentType type, ComponentData data)
         {
             this.type = type;

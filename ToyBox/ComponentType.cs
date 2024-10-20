@@ -12,6 +12,7 @@ namespace ToyBox
         public abstract JsonNode Save(ComponentData instance);
 
         public abstract ComponentData Load(JsonNode obj);
+        public abstract ComponentData CreateData();
 
         public abstract TriState Update(ComponentData component, TriState[] input);
 

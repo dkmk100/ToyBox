@@ -38,9 +38,13 @@ namespace ToyBox
             // Initialize Myra
             MyraEnvironment.Game = this;
 
-            // Initialize the Menu
+
+            UnitTests tests = new UnitTests();
+            tests.RunTests(registry);
+
             _menu = new Menu();
             _menu.InitializeMenu(); // Sets up the UI elements
+
                 // Make sure you're registering properly initialized components
             base.Initialize();
         }

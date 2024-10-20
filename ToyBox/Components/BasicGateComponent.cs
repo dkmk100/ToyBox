@@ -29,7 +29,10 @@ namespace ToyBox.Components
         {
             return BasicComponentData.FromJson(obj);
         }
-
+        public override ComponentData CreateData()
+        {
+            return new BasicComponentData();
+        }
         public override JsonNode Save(ComponentData instance)
         {
             return ((BasicComponentData)instance).ToJson();
@@ -75,7 +78,7 @@ namespace ToyBox.Components
                             return TriState.ERROR;
                         }
                     }
-                    return val;
+                    return val.Invert();
                 case GateType.AND:
                     val = TriState.UNPOWERED;
                     foreach(TriState state in input)
@@ -138,7 +141,7 @@ namespace ToyBox.Components
                     {
                         return TriState.UNPOWERED;
                     }
-                    return count % 2 == 0 ? TriState.ON : TriState.OFF;
+                    return count % 2 == 0 ? TriState.OFF : TriState.ON;
                 default:
                     return TriState.ERROR;
             }
@@ -146,7 +149,7 @@ namespace ToyBox.Components
 
         public override TriState Update(ComponentData component, TriState[] input)
         {
-            throw new NotImplementedException();
+            return GetValue(input, this.type);
         }
     }
 }
