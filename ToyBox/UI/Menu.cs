@@ -1,6 +1,8 @@
 using Microsoft.Xna.Framework;
 using Myra.Graphics2D.UI;
 using System.Collections.Generic;
+using Myra.Graphics2D.UI.Styles;
+using Myra.Graphics2D.TextureAtlases;
 
 public class Menu
 {
@@ -36,6 +38,7 @@ public class Menu
         panel.Widgets.Add(titleLabel);
 
         // Add buttons for each gate type (AND, OR, NOT, XOR)
+        // use this to add new buttons for the composite-components
         AddGateButton(panel, "AND Gate", "AND");
         AddGateButton(panel, "OR Gate", "OR");
         AddGateButton(panel, "NOT Gate", "NOT");
