@@ -1,11 +1,56 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace ToyBox
 {
     public class GameState
     {
+
+        public JsonNode ToJson(ComponentsRegistry registry)
+        {
+            JsonArray arr = new JsonArray();
+
+            foreach(var item in components)
+            {
+                JsonObject obj = new JsonObject();
+                obj.Add("component", item.Item1.Save(registry));
+                obj.Add("inputs", JsonSerializer.Serialize(item.Item2.ToArray()));
+                obj.Add("outputs", JsonSerializer.Serialize(item.Item3.ToArray()));
+                arr.Add(obj);
+            }
+
+            return arr;
+        }
+        public static GameState FromJson(ComponentsRegistry registry, JsonNode node)
+        {
+            GameState state = new GameState();
+
+            JsonArray arr = node.AsArray();
+            foreach(var item in arr)
+            {
+                JsonObject obj = item.AsObject();
+                ComponentInstance component = ComponentInstance.Load(registry, obj["component"]);
+                List<int> inputs = new List<int>(obj["inputs"].AsArray().GetValues<int>());
+                List<int> outputs = new List<int>(obj["outputs"].AsArray().GetValues<int>());
+                state.components.Add((component, inputs, outputs));
+            }
+
+            return state;
+        }
+        public GameState Clone()
+        {
+            GameState state = new GameState();
+            foreach(var item in components)
+            {
+                state.components.Add((item.Item1.Clone(), item.Item2.ToArray().ToList(), item.Item3.ToArray().ToList()));
+            }
+            return state;
+        }
+        
         List<(ComponentInstance, List<int>, List<int>)> components = new List<(ComponentInstance, List<int>, List<int>)>();
 
         public List<ComponentInstance> GetComponents()

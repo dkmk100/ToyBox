@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace ToyBox
 {
@@ -14,6 +15,15 @@ namespace ToyBox
         public Vector2 GetPos()
         {
             return pos;
+        }
+
+        public ComponentInstance Clone()
+        {
+            ComponentInstance inst = new ComponentInstance(type, data, pos);
+            inst.previous = previous;
+            inst.previousIn = new TriState[previousIn.Length];
+            previousIn.CopyTo(inst.previousIn, 0);
+            return inst;
         }
 
         public ComponentInstance(ComponentType type, Vector2 pos)
@@ -38,21 +48,21 @@ namespace ToyBox
             JsonObject obj = new JsonObject
             {
                 { "data", node },
-                { "type", registry.GetName(type) }
+                { "type", registry.GetName(type) },
+                { "x", pos.X },
+                { "y", pos.Y }
             };
             return obj;
         }
 
-        public static ComponentInstance Load(ComponentsRegistry registry, JsonObject data, Vector2 pos)
+        public static ComponentInstance Load(ComponentsRegistry registry, JsonNode data)
         {
-            if(data.TryGetPropertyValue("type", out JsonNode node))
-            {
-                string typeName = node.AsValue().ToString();
-                ComponentType type = registry.Get(typeName);
-                return new ComponentInstance(type, type.Load(data), pos);
-            }
 
-            return new ComponentInstance(null, null, Vector2.Zero);
+            string typeName = data["type"].ToString();
+            ComponentType type = registry.Get(typeName);
+            Vector2 pos = new Vector2(data["x"].GetValue<int>(), data["y"].GetValue<int>());
+
+            return new ComponentInstance(type, type.Load(data), pos);
         }
 
         public TriState Update(TriState[] inputs)

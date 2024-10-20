@@ -66,6 +66,8 @@ namespace ToyBox
             Debug.WriteLine("adder b2: " + state.GetValue(b2));
             Debug.WriteLine("adder xor: " + state.GetValue(xor));
             Debug.WriteLine("adder and: " + state.GetValue(and));
+
+            Debug.WriteLine(state.ToJson(registry).ToString());
         }
 
 

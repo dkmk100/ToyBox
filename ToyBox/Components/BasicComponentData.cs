@@ -14,7 +14,11 @@ namespace ToyBox.Components
 
         public static BasicComponentData FromJson(JsonNode node)
         {
-            return (BasicComponentData)JsonSerializer.Deserialize(node, typeof(BasicComponentData));
+            return new BasicComponentData(node.GetValue<TriState>());
+        }
+        public BasicComponentData(TriState data)
+        {
+            cachedValue = data;
         }
         public BasicComponentData()
         {
@@ -22,7 +26,7 @@ namespace ToyBox.Components
         }
         public JsonNode ToJson()
         {
-            return JsonSerializer.SerializeToNode(this);
+            return JsonSerializer.SerializeToNode<TriState>(cachedValue);
         }
     }
 }
