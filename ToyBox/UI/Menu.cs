@@ -64,7 +64,7 @@ public class Menu
         {
             Width = 100,
             Height = 50,
-            HorizontalAlignment = HorizontalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Left,
             VerticalAlignment = VerticalAlignment.Top,
             Top = _currentY // Set the Y position for this button
         };
