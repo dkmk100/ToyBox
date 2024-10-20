@@ -38,17 +38,17 @@ namespace ToyBox.Components
             return ((BasicComponentData)instance).ToJson();
         }
 
-        public override bool TryGetTruthTable(ComponentData component, int inputCount, out TruthTable table)
+        public override bool TryGetTruthTable(ComponentData component, int inputCount, out TruthTable? table)
         {
             table = new TruthTable(inputCount);
 
             for(int i=0; i < TruthTable.GetPackedCount(inputCount); i++)
             {
                 TriState[] vals = TruthTable.UnpackValues(i, inputCount);
-                table.SetValue(vals, GetValue(vals, this.type));
+                table.Value.SetValue(vals, GetValue(vals, this.type));
             }
 
-            table.Lock();
+            table.Value.Lock();
 
             return true;
         }
@@ -150,6 +150,11 @@ namespace ToyBox.Components
         public override TriState Update(ComponentData component, TriState[] input)
         {
             return GetValue(input, this.type);
+        }
+
+        public override void OnInteract(ComponentData component)
+        {
+            //nothing to do here
         }
     }
 }

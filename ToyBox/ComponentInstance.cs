@@ -1,28 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Microsoft.Xna.Framework;
 using System.Text.Json.Nodes;
-using System.Threading.Tasks;
 
 namespace ToyBox
 {
-    //can be a struct because it only stores reference types
-    public struct ComponentInstance
+    public class ComponentInstance
     {
         private ComponentType type;
         private ComponentData data;
+        private Vector2 pos;
+        private TriState previous;
+        private TriState[] previousIn;
 
-        public ComponentInstance(ComponentType type)
+        public Vector2 GetPos()
+        {
+            return pos;
+        }
+
+        public ComponentInstance(ComponentType type, Vector2 pos)
         {
             this.type = type;
             this.data = type.CreateData();
+            this.pos = pos;
+            previous = TriState.ERROR;
         }
 
-        public ComponentInstance(ComponentType type, ComponentData data)
+        public ComponentInstance(ComponentType type, ComponentData data, Vector2 pos)
         {
             this.type = type;
             this.data = data;
+            this.pos = pos;
+            previous = TriState.ERROR;
         }
 
         public JsonNode Save(ComponentsRegistry registry)
@@ -36,21 +43,33 @@ namespace ToyBox
             return obj;
         }
 
-        public static ComponentInstance Load(ComponentsRegistry registry, JsonObject data)
+        public static ComponentInstance Load(ComponentsRegistry registry, JsonObject data, Vector2 pos)
         {
             if(data.TryGetPropertyValue("type", out JsonNode node))
             {
                 string typeName = node.AsValue().ToString();
                 ComponentType type = registry.Get(typeName);
-                return new ComponentInstance(type, type.Load(data));
+                return new ComponentInstance(type, type.Load(data), pos);
             }
 
-            return new ComponentInstance(null, null);
+            return new ComponentInstance(null, null, Vector2.Zero);
         }
 
         public TriState Update(TriState[] inputs)
         {
-            return type.Update(data, inputs);
+            previousIn = inputs;
+
+            TriState state = type.Update(data, inputs);
+            previous = state;
+            return state;
+        }
+        public TriState GetCached()
+        {
+            return previous;
+        }
+        public void OnInteract()
+        {
+            type.OnInteract(data);
         }
     }
 }

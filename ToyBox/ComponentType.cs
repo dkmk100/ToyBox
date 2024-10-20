@@ -15,7 +15,7 @@ namespace ToyBox
         public abstract ComponentData CreateData();
 
         public abstract TriState Update(ComponentData component, TriState[] input);
-
-        public abstract bool TryGetTruthTable(ComponentData component, int inputCount, out TruthTable table);
+        public abstract void OnInteract(ComponentData component);
+        public abstract bool TryGetTruthTable(ComponentData component, int inputCount, out TruthTable? table);
     }
 }

@@ -35,6 +35,8 @@ namespace ToyBox
             registry.Register(new BasicGateComponent(GateType.AND), "and");
             registry.Register(new BasicGateComponent(GateType.OR), "or");
             registry.Register(new BasicGateComponent(GateType.XOR), "xor");
+
+            registry.Register(new ButtonComponent(), "button");
             // Initialize Myra
             MyraEnvironment.Game = this;
 

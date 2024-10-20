@@ -18,7 +18,7 @@ namespace ToyBox.Components
         }
         public BasicComponentData()
         {
-
+            cachedValue = TriState.ERROR;
         }
         public JsonNode ToJson()
         {
