@@ -49,6 +49,7 @@ namespace ToyBox
             registry.RegisterBuiltin(new BasicGateComponent(GateType.NAND), "nand");
             registry.RegisterBuiltin(new BasicGateComponent(GateType.NOR), "nor");
             registry.RegisterBuiltin(new BasicGateComponent(GateType.XNOR), "xnor");
+            registry.RegisterBuiltin(new LEDComponent(), "LED");
             registry.RegisterBuiltin(new ButtonComponent(), "button");
 
             //run unit tests
