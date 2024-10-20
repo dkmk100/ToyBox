@@ -46,8 +46,16 @@ namespace ToyBox.Components
         }
         public override TriState[] Update(ComponentData component, TriState[] input)
         {
-            ((BasicComponentData)component).cachedValue = input[0];
-            return new TriState[]{ ((BasicComponentData)component).cachedValue};
+            var data = component as BasicComponentData;
+            if (input.Length == 0)
+            {
+                data.cachedValue = TriState.UNPOWERED;
+            }
+            else {
+                //TODO calculate input state correctly
+                data.cachedValue = input[0];
+            }
+            return new TriState[]{ data.cachedValue};
         }
 
         public override bool TrySetState(ComponentData component, TriState state)

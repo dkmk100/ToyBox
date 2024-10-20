@@ -39,7 +39,7 @@ public class Menu
         var panel = new Panel
         {
             Width = 200,
-            Height = 700
+            Height = 900
         };
 
         // Add a label for the title
@@ -130,12 +130,13 @@ public class Menu
     public void SetSelectedGateType(string gateType)
     {
         selectedGateType = gateType;
-        selectedGateLabel.Text = $"Selected Gate: {gateType}";
+        
     }
 
     // Method to render the UI and any dragged component
-    public void Draw()
+    public void Draw(int selected)
     {
+        selectedGateLabel.Text = $"Selected Gate: {selectedGateType}, {selected}";
         // Render the Myra UI
         _desktop.Render();
     }

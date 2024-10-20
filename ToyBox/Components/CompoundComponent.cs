@@ -115,7 +115,7 @@ namespace ToyBox.Components
 
         public override void Render(SpriteBatch batch, ComponentData component, Vector2 pos, SpritesManager sprites, ComponentsRegistry registry)
         {
-            //TODO render compound components
+            sprites.Render(batch, "cpu", pos, 1.5f);
         }
     }
 

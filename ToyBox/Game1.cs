@@ -8,6 +8,7 @@ using Apos.Camera;
 using Apos.Input;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 
 namespace ToyBox
@@ -46,9 +47,11 @@ namespace ToyBox
             registry.RegisterBuiltin(new BasicGateComponent(GateType.AND), "and");
             registry.RegisterBuiltin(new BasicGateComponent(GateType.OR), "or");
             registry.RegisterBuiltin(new BasicGateComponent(GateType.XOR), "xor");
+            /*
             registry.RegisterBuiltin(new BasicGateComponent(GateType.NAND), "nand");
             registry.RegisterBuiltin(new BasicGateComponent(GateType.NOR), "nor");
             registry.RegisterBuiltin(new BasicGateComponent(GateType.XNOR), "xnor");
+            */
             registry.RegisterBuiltin(new LEDComponent(), "LED");
             registry.RegisterBuiltin(new ButtonComponent(), "button");
 
@@ -66,15 +69,7 @@ namespace ToyBox
             _menu = new Menu();
             _menu.InitializeMenu(); // Sets up the UI elements
 
-            List<string> buttons = new List<string>();
-            buttons.Add("none");
-            buttons.Add("wire");
-            foreach (var name in registry.GetNames())
-            {
-                buttons.Add(name);
-            }
-
-            _menu.RefreshButtons(buttons.ToArray());
+            ResetButtons();
 
             IVirtualViewport defaultViewport = new DefaultViewport(GraphicsDevice, Window);
 
@@ -91,6 +86,21 @@ namespace ToyBox
             base.Initialize();
         }
 
+        void ResetButtons()
+        {
+            List<string> buttons = new List<string>();
+            buttons.Add("none");
+            buttons.Add("clear");
+            buttons.Add("new");
+            buttons.Add("wire");
+            foreach (var name in registry.GetNames())
+            {
+                buttons.Add(name);
+            }
+
+            _menu.RefreshButtons(buttons.ToArray());
+        }
+
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -98,6 +108,8 @@ namespace ToyBox
         }
 
         bool lastPressed = false;
+
+        int customCount = 0;
 
         protected override void Update(GameTime gameTime)
         {
@@ -111,6 +123,18 @@ namespace ToyBox
             else if (Keyboard.GetState().IsKeyDown(Keys.D2))
             {
                 selectedOut = 1;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.D3))
+            {
+                selectedOut = 2;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.D4))
+            {
+                selectedOut = 3;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.D5))
+            {
+                selectedOut = 4;
             }
 
             bool pressed = false;
@@ -130,18 +154,55 @@ namespace ToyBox
                 Vector2 pos = camera.ScreenToWorld(Mouse.GetState().Position.ToVector2());
                 if (selected == "none")
                 {
-                    int component = gameState.GetComponent(pos,range);
-                    if(component >= 0)
+                    int component = gameState.GetComponent(pos, range);
+                    if (component >= 0)
                     {
                         gameState.ToggleComponent(component);
                     }
                 }
-                else if(selected == "wire")
+                else if (selected == "clear")
+                {
+                    gameState.Clear();
+                    _menu.SetSelectedGateType("none");
+                }
+                else if (selected == "new")
+                {
+                    List<ComponentInstance> components = gameState.GetComponents();
+                    ComponentType button = registry.Get("button");
+                    ComponentType[] lights = [registry.Get("LED")];
+
+                    List<int> inputs = new List<int>();
+                    List<(int, int)> outputs = new List<(int, int)>();
+
+                    int i = 0;
+                    foreach (var component in components)
+                    {
+                        if (component.Type() == button)
+                        {
+                            inputs.Add(i);
+                        }
+                        else if (lights.Contains(component.Type()))
+                        {
+                            outputs.Add((i, 0));
+                        }
+                        i++;
+                    }
+
+                    CompoundComponent compound = new CompoundComponent(gameState.Clone(), inputs.ToArray(), outputs.ToArray(), registry);
+
+                    registry.Register(compound, "custom_" + customCount);
+                    customCount++;
+                    _menu.SetSelectedGateType("none");
+                    ResetButtons();
+                    gameState.Clear();
+
+                }
+                else if (selected == "wire")
                 {
                     int component = gameState.GetComponent(pos, range);
                     if (component >= 0)
                     {
-                        if(selectedComponent == -1)
+                        if (selectedComponent == -1)
                         {
                             selectedComponent = component;
                         }
@@ -149,6 +210,7 @@ namespace ToyBox
                         {
                             gameState.AddConnection(selectedComponent, selectedOut, component);
                             selectedComponent = -1;
+                            _menu.SetSelectedGateType("none");
                         }
                     }
                 }
@@ -182,7 +244,7 @@ namespace ToyBox
             DrawForeground();
             camera.ResetViewport();
 
-            _menu.Draw();
+            _menu.Draw(selectedOut + 1);
         }
 
         

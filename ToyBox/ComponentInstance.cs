@@ -13,6 +13,10 @@ namespace ToyBox
         private TriState[] previous;
         private TriState[] previousIn;
 
+        public ComponentType Type()
+        {
+            return type;
+        }
         public Vector2 GetPos()
         {
             return pos;

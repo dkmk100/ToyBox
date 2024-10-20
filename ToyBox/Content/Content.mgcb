@@ -85,6 +85,18 @@
 /processorParam:TextureFormat=Color
 /build:Assets/button_pressed.png
 
+#begin Assets/cpu.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/cpu.png
+
 #begin Assets/light_blue_on.png
 /importer:TextureImporter
 /processor:TextureProcessor

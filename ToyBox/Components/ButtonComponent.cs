@@ -61,11 +61,11 @@ namespace ToyBox.Components
             string name; 
             if (data.cachedValue.IsOn())
             {
-                name = "button_pressed";
+                name = "button_pressed_greenversion";
             }
             else
             {
-                name = "button_notpressed";
+                name = "button_notpressed_redversion";
             }
 
             sprites.Render(batch, name, pos, 1.5f);

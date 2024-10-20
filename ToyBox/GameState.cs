@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -145,6 +146,23 @@ namespace ToyBox
             foreach(var item in components)
             {
                 item.Item1.Render(batch, sprites, registry);
+                foreach(var input in item.Item2)
+                {
+                    Vector2 source = components[input.Item1].Item1.GetPos();
+                    Vector2 dest = item.Item1.GetPos();
+
+                    source += new Vector2(5-2*input.Item2, -5);
+                    dest += new Vector2(0, 5);
+
+                    Vector2 dir = dest - source;
+                    float dist = dir.Length();
+                    dir.Normalize();
+                    float angle = MathF.Atan2(dir.Y, dir.X);
+
+                    Texture2D sprite = sprites.getSprite("arrow");
+
+                    batch.Draw(sprite, source, null, Color.White, angle, new Vector2(0,0), new Vector2(dist/sprite.Height, 1f), SpriteEffects.None, 1f);
+                }
             }
         }
     }
