@@ -23,24 +23,24 @@ namespace ToyBox
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-
-
         }
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            //register the component types
             registry = new ComponentsRegistry();
             registry.Register(new BasicGateComponent(GateType.NOT), "not");
             registry.Register(new BasicGateComponent(GateType.AND), "and");
             registry.Register(new BasicGateComponent(GateType.OR), "or");
             registry.Register(new BasicGateComponent(GateType.XOR), "xor");
-            // Initialize Myra
-            MyraEnvironment.Game = this;
+            registry.Register(new ButtonComponent(), "button");
 
-
+            //run unit tests
             UnitTests tests = new UnitTests();
             tests.RunTests(registry);
+
+            // Initialize Myra
+            MyraEnvironment.Game = this;
 
             _menu = new Menu();
             _menu.InitializeMenu(); // Sets up the UI elements
