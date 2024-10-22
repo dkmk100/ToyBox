@@ -31,6 +31,8 @@ namespace ToyBox
 
         int selectedComponent = -1;
 
+        string previous = "none";
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -144,7 +146,12 @@ namespace ToyBox
                 pressed = false;
             }
 
-            if(pressed && !lastPressed && !_menu.IsOnUI())
+            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            {
+                _menu.SetSelectedGateType(previous);
+            }
+
+            if (pressed && !lastPressed && !_menu.IsOnUI())
             {
                 float range = 20f;
                 string selected = _menu.GetSelected();
@@ -201,6 +208,7 @@ namespace ToyBox
                 }
                 else if (selected == "wire")
                 {
+                    previous = selected;
                     int component = gameState.GetComponent(pos, range);
                     if (component >= 0)
                     {
@@ -218,10 +226,13 @@ namespace ToyBox
                 }
                 else
                 {
+                    previous = selected;
                     gameState.AddComponent(registry.Get(selected), pos);
                     _menu.SetSelectedGateType("none");
                 }
             }
+
+            
 
             lastPressed = pressed;
 

@@ -55,6 +55,12 @@ namespace ToyBox.Components
             TriState val;
             switch(type)
             {
+                case GateType.NOR:
+                    return GetValue(input, GateType.OR).Invert();
+                case GateType.XNOR:
+                    return GetValue(input, GateType.XOR).Invert();
+                case GateType.NAND:
+                    return GetValue(input, GateType.AND).Invert();
                 case GateType.NOT:
                     val = TriState.UNPOWERED;
                     foreach (TriState state in input)
@@ -77,7 +83,6 @@ namespace ToyBox.Components
                     }
                     return val.Invert();
                 case GateType.AND:
-                case GateType.NAND:
                     val = TriState.UNPOWERED;
                     foreach(TriState state in input)
                     {
@@ -94,9 +99,8 @@ namespace ToyBox.Components
                             val = TriState.ON;
                         }
                     }
-                    return type==GateType.NAND ? val.Invert() : val;
+                    return val;
                 case GateType.OR:
-                case GateType.NOR:
                     val = TriState.UNPOWERED;
                     foreach (TriState state in input)
                     {
@@ -113,9 +117,8 @@ namespace ToyBox.Components
                             val = TriState.OFF;
                         }
                     }
-                    return type == GateType.NOR ? val.Invert() : val;
+                    return val;
                 case GateType.XOR:
-                case GateType.XNOR:
                     bool hasInput = true;
                     int count = 0;
                     foreach (TriState state in input)
@@ -142,7 +145,7 @@ namespace ToyBox.Components
                         return TriState.UNPOWERED;
                     }
                     val = count % 2 == 0 ? TriState.OFF : TriState.ON;
-                    return type == GateType.NAND ? val.Invert() : val;
+                    return val;
                 default:
                     return TriState.ERROR;
             }
