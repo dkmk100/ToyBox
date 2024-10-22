@@ -146,7 +146,7 @@ namespace ToyBox
                 pressed = false;
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            if (Keyboard.GetState().IsKeyDown(Keys.Space) && _menu.GetSelected() == "none")
             {
                 _menu.SetSelectedGateType(previous);
             }
